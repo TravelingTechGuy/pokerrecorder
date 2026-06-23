@@ -33,6 +33,32 @@ sequenceDiagram
     React UI-->>User: Render Dashboard
 ```
 
+### 📊 Database Schema
+
+The database uses a simple relational model, with `games` serving as the central fact table.
+
+```mermaid
+erDiagram
+    GAMES {
+        UUID id PK
+        DATE date
+        TEXT host FK
+        TEXT type FK
+        INTEGER buyIns
+        NUMERIC buyInAmount
+        NUMERIC cashOutAmount
+    }
+    HOSTS {
+        TEXT name PK
+    }
+    GAME_TYPES {
+        TEXT name PK
+    }
+    
+    GAMES }|--|| HOSTS : "hosted by"
+    GAMES }|--|| GAME_TYPES : "is of type"
+```
+
 ### 📱 UI Flow
 
 The application is split into three main tabs for ease of use on mobile devices, gated by a secure authentication layer.
@@ -85,19 +111,28 @@ VITE_SUPABASE_ANON_KEY=your_anon_key_here
 Navigate to the **SQL Editor** in your Supabase Dashboard on the left sidebar, paste the following code, and hit **Run**:
 
 ```sql
+-- Create hosts table
+CREATE TABLE hosts (
+  name TEXT PRIMARY KEY
+);
+
+-- Create game_types table
+CREATE TABLE game_types (
+  name TEXT PRIMARY KEY
+);
+
+-- Insert default types
+INSERT INTO game_types (name) VALUES ('cash'), ('tournament'), ('mixed');
+
 -- Create games table
 CREATE TABLE games (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   date DATE NOT NULL,
-  host TEXT NOT NULL,
+  host TEXT REFERENCES hosts(name) NOT NULL,
+  type TEXT REFERENCES game_types(name) DEFAULT 'cash',
   "buyIns" INTEGER NOT NULL,
   "buyInAmount" NUMERIC NOT NULL,
   "cashOutAmount" NUMERIC NOT NULL
-);
-
--- Create hosts table
-CREATE TABLE hosts (
-  name TEXT PRIMARY KEY
 );
 ```
 
@@ -108,9 +143,11 @@ In the same **SQL Editor**, run this snippet to lock down the tables:
 ```sql
 ALTER TABLE games ENABLE ROW LEVEL SECURITY;
 ALTER TABLE hosts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE game_types ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Only authenticated users can access games" ON games FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Only authenticated users can access hosts" ON hosts FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY "Only authenticated users can access game_types" ON game_types FOR ALL USING (auth.role() = 'authenticated');
 
 -- Flush schema cache to ensure immediate enforcement
 NOTIFY pgrst, 'reload schema';

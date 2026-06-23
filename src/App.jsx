@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, PlusCircle, List, LogOut } from 'lucide-react';
-import { useGames, useHosts } from './hooks/useData';
+import { useGames, useHosts, useGameTypes } from './hooks/useData';
 import { Dashboard } from './components/Dashboard';
 import { GameForm } from './components/GameForm';
 import { HistoryTable } from './components/HistoryTable';
@@ -13,6 +13,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const { games, addGame, deleteGame, importGames } = useGames();
   const { hosts, addHost } = useHosts();
+  const { gameTypes } = useGameTypes();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -56,10 +57,9 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="container mt-2">
         {activeTab === 'dashboard' && <Dashboard games={games} />}
-        {activeTab === 'add' && <GameForm onSave={handleSaveGame} hosts={hosts} addHost={addHost} />}
+        {activeTab === 'add' && <GameForm onSave={handleSaveGame} hosts={hosts} addHost={addHost} gameTypes={gameTypes} />}
         {activeTab === 'history' && <HistoryTable games={games} onDelete={deleteGame} onImport={importGames} />}
       </main>
 

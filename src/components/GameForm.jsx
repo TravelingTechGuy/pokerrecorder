@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 
-export function GameForm({ onSave, hosts, addHost }) {
+export function GameForm({ onSave, hosts, addHost, gameTypes }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [host, setHost] = useState('');
+  const [type, setType] = useState('cash');
   const [newHost, setNewHost] = useState('');
   const [isAddingHost, setIsAddingHost] = useState(false);
   const [buyIns, setBuyIns] = useState(1);
@@ -17,18 +18,19 @@ export function GameForm({ onSave, hosts, addHost }) {
     }
   }, [hosts, host]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     let finalHost = host;
     if (isAddingHost && newHost.trim()) {
       finalHost = newHost.trim();
-      addHost(finalHost);
+      await addHost(finalHost);
     }
 
     const game = {
       date,
       host: finalHost,
+      type,
       buyIns: Number(buyIns),
       buyInAmount: Number(buyInAmount),
       cashOutAmount: Number(cashOutAmount),
@@ -38,6 +40,7 @@ export function GameForm({ onSave, hosts, addHost }) {
     
     // Reset form
     setDate(format(new Date(), 'yyyy-MM-dd'));
+    setType('cash');
     setBuyIns(1);
     setBuyInAmount(50);
     setCashOutAmount(0);
@@ -96,6 +99,20 @@ export function GameForm({ onSave, hosts, addHost }) {
               </button>
             </div>
           )}
+        </div>
+
+        <div className="form-group">
+          <label className="label">Game Type</label>
+          <select 
+            className="input" 
+            value={type} 
+            onChange={e => setType(e.target.value)}
+            required
+          >
+            {gameTypes && gameTypes.map(t => (
+              <option key={t} value={t}>{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+            ))}
+          </select>
         </div>
 
         <div className="grid-2">

@@ -56,7 +56,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
   const handleExportCSV = () => {
     if (games.length === 0) return;
     
-    const headers = ['Date', 'Host', 'Buy-ins', 'Buy-in Amount', 'Total Invested', 'Cash Out', 'Profit/Loss'];
+    const headers = ['Date', 'Host', 'Type', 'Buy-ins', 'Buy-in Amount', 'Total Invested', 'Cash Out', 'Profit/Loss'];
     
     const rows = games.map(g => {
       const totalInvested = g.buyIns * g.buyInAmount;
@@ -64,6 +64,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
       return [
         g.date,
         g.host,
+        g.type || 'cash',
         g.buyIns,
         g.buyInAmount,
         totalInvested,
@@ -103,13 +104,21 @@ export function HistoryTable({ games, onDelete, onImport }) {
       const parsedGames = lines.slice(1).map(line => {
         const cols = line.split(',');
         if (cols.length >= 6) {
+          let typeStr = 'cash';
+          let offset = 0;
+          if (isNaN(parseInt(cols[2], 10))) {
+            typeStr = cols[2];
+            offset = 1;
+          }
+          
           return {
             date: cols[0],
             host: cols[1],
-            buyIns: parseInt(cols[2], 10) || 1,
-            buyInAmount: parseFloat(cols[3]) || 0,
-            // cols[4] is Total Invested, we don't store it
-            cashOutAmount: parseFloat(cols[5]) || 0
+            type: typeStr.toLowerCase(),
+            buyIns: parseInt(cols[2 + offset], 10) || 1,
+            buyInAmount: parseFloat(cols[3 + offset]) || 0,
+            // cols[4+offset] is Total Invested, we don't store it
+            cashOutAmount: parseFloat(cols[5 + offset]) || 0
           };
         }
         return null;
@@ -146,6 +155,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
               <option value="in-desc">Sort: Invested (High to Low)</option>
               <option value="in-asc">Sort: Invested (Low to High)</option>
               <option value="host-asc">Sort: Host (A-Z)</option>
+              <option value="type-asc">Sort: Type (A-Z)</option>
             </select>
           </div>
 
@@ -179,6 +189,9 @@ export function HistoryTable({ games, onDelete, onImport }) {
               <th onClick={() => requestSort('host')} className="th-sortable">
                 <div className="flex items-center gap-1">Host <SortIcon columnKey="host" /></div>
               </th>
+              <th onClick={() => requestSort('type')} className="th-sortable">
+                <div className="flex items-center gap-1">Type <SortIcon columnKey="type" /></div>
+              </th>
               <th onClick={() => requestSort('buyIns')} className="th-sortable">
                 <div className="flex items-center gap-1"># Buy-ins <SortIcon columnKey="buyIns" /></div>
               </th>
@@ -202,6 +215,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
                 <tr key={g.id}>
                   <td data-label="Date" className="whitespace-nowrap">{format(parseISO(g.date), 'MMM d, yyyy')}</td>
                   <td data-label="Host">{g.host}</td>
+                  <td data-label="Type" className="capitalize">{g.type || 'cash'}</td>
                   <td data-label="# Buy-ins">{g.buyIns}</td>
                   <td data-label="In">{formatCurrency(totalInvested)}</td>
                   <td data-label="Out">{formatCurrency(g.cashOutAmount)}</td>

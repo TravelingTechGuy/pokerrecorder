@@ -120,3 +120,33 @@ export function useHosts() {
 
   return { hosts, addHost };
 }
+
+export function useGameTypes() {
+  const [gameTypes, setGameTypes] = useState(['cash', 'tournament', 'mixed']);
+
+  const fetchGameTypes = async () => {
+    const { data, error } = await supabase
+      .from('game_types')
+      .select('name');
+      
+    if (error) {
+      console.error('Error fetching game types:', error);
+    } else if (data && data.length > 0) {
+      setGameTypes(data.map(gt => gt.name));
+    }
+  };
+
+  useEffect(() => {
+    fetchGameTypes();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        fetchGameTypes();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  return { gameTypes };
+}
