@@ -407,6 +407,27 @@ input, select {
   }
 }
 
+/* Sorting UI */
+.mobile-only {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .mobile-only {
+    display: none;
+  }
+}
+
+.th-sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.th-sortable:hover {
+  color: var(--text-primary);
+}
+
 /* Auth Component */
 .auth-container {
   display: flex;

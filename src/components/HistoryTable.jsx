@@ -1,10 +1,57 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { format, parseISO } from 'date-fns';
-import { Download, Upload, Trash2 } from 'lucide-react';
+import { Download, Upload, Trash2, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 import { formatCurrency } from '../utils';
 
 export function HistoryTable({ games, onDelete, onImport }) {
   const fileInputRef = useRef(null);
+  const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
+  
+  const sortedGames = useMemo(() => {
+    let sortableGames = [...games];
+    sortableGames.sort((a, b) => {
+      const aInvested = a.buyIns * a.buyInAmount;
+      const bInvested = b.buyIns * b.buyInAmount;
+      const aPl = a.cashOutAmount - aInvested;
+      const bPl = b.cashOutAmount - bInvested;
+
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+
+      if (sortConfig.key === 'in') {
+        aValue = aInvested;
+        bValue = bInvested;
+      } else if (sortConfig.key === 'out') {
+        aValue = a.cashOutAmount;
+        bValue = b.cashOutAmount;
+      } else if (sortConfig.key === 'pl') {
+        aValue = aPl;
+        bValue = bPl;
+      }
+
+      if (aValue < bValue) {
+        return sortConfig.direction === 'asc' ? -1 : 1;
+      }
+      if (aValue > bValue) {
+        return sortConfig.direction === 'asc' ? 1 : -1;
+      }
+      return 0;
+    });
+    return sortableGames;
+  }, [games, sortConfig]);
+
+  const requestSort = (key) => {
+    let direction = 'desc';
+    if (sortConfig.key === key && sortConfig.direction === 'desc') {
+      direction = 'asc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const SortIcon = ({ columnKey }) => {
+    if (sortConfig.key !== columnKey) return <ArrowUpDown size={14} className="opacity-50" />;
+    return sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />;
+  };
   
   const handleExportCSV = () => {
     if (games.length === 0) return;
@@ -78,9 +125,31 @@ export function HistoryTable({ games, onDelete, onImport }) {
 
   return (
     <div className="card animate-fade-in">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6" style={{ flexWrap: 'wrap', gap: '1rem' }}>
         <h2 className="text-xl font-bold">Game History</h2>
-        <div className="flex gap-2">
+        
+        <div className="flex items-center gap-4" style={{ flexWrap: 'wrap' }}>
+          <div className="mobile-only">
+            <select 
+              className="input"
+              style={{ padding: '0.4rem 0.75rem', width: 'auto' }}
+              value={`${sortConfig.key}-${sortConfig.direction}`}
+              onChange={(e) => {
+                const [key, direction] = e.target.value.split('-');
+                setSortConfig({ key, direction });
+              }}
+            >
+              <option value="date-desc">Sort: Date (Newest)</option>
+              <option value="date-asc">Sort: Date (Oldest)</option>
+              <option value="pl-desc">Sort: Profit (High to Low)</option>
+              <option value="pl-asc">Sort: Profit (Low to High)</option>
+              <option value="in-desc">Sort: Invested (High to Low)</option>
+              <option value="in-asc">Sort: Invested (Low to High)</option>
+              <option value="host-asc">Sort: Host (A-Z)</option>
+            </select>
+          </div>
+
+          <div className="flex gap-2">
           <input 
             type="file" 
             accept=".csv" 
@@ -98,22 +167,35 @@ export function HistoryTable({ games, onDelete, onImport }) {
           </button>
         </div>
       </div>
+      </div>
 
       <div className="table-container">
         <table className="table">
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Host</th>
-              <th># Buy-ins</th>
-              <th>In</th>
-              <th>Out</th>
-              <th>P/L</th>
+              <th onClick={() => requestSort('date')} className="th-sortable">
+                <div className="flex items-center gap-1">Date <SortIcon columnKey="date" /></div>
+              </th>
+              <th onClick={() => requestSort('host')} className="th-sortable">
+                <div className="flex items-center gap-1">Host <SortIcon columnKey="host" /></div>
+              </th>
+              <th onClick={() => requestSort('buyIns')} className="th-sortable">
+                <div className="flex items-center gap-1"># Buy-ins <SortIcon columnKey="buyIns" /></div>
+              </th>
+              <th onClick={() => requestSort('in')} className="th-sortable">
+                <div className="flex items-center gap-1">In <SortIcon columnKey="in" /></div>
+              </th>
+              <th onClick={() => requestSort('out')} className="th-sortable">
+                <div className="flex items-center gap-1">Out <SortIcon columnKey="out" /></div>
+              </th>
+              <th onClick={() => requestSort('pl')} className="th-sortable">
+                <div className="flex items-center gap-1">P/L <SortIcon columnKey="pl" /></div>
+              </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {[...games].reverse().map(g => {
+            {sortedGames.map(g => {
               const totalInvested = g.buyIns * g.buyInAmount;
               const pl = g.cashOutAmount - totalInvested;
               return (
