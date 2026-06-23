@@ -105,6 +105,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
             <tr>
               <th>Date</th>
               <th>Host</th>
+              <th># Buy-ins</th>
               <th>In</th>
               <th>Out</th>
               <th>P/L</th>
@@ -119,6 +120,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
                 <tr key={g.id}>
                   <td data-label="Date" className="whitespace-nowrap">{format(parseISO(g.date), 'MMM d, yyyy')}</td>
                   <td data-label="Host">{g.host}</td>
+                  <td data-label="# Buy-ins">{g.buyIns}</td>
                   <td data-label="In">{formatCurrency(totalInvested)}</td>
                   <td data-label="Out">{formatCurrency(g.cashOutAmount)}</td>
                   <td data-label="P/L" className={`font-semibold ${pl >= 0 ? 'positive' : 'negative'}`}>
