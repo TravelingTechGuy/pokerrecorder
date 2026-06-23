@@ -83,7 +83,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    const latestGameDate = games.length > 0 ? games[0].date : format(new Date(), 'yyyy-MM-dd');
+    const latestGameDate = games.length > 0 ? games[games.length - 1].date : format(new Date(), 'yyyy-MM-dd');
     link.setAttribute('download', `poker_history_${latestGameDate}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
