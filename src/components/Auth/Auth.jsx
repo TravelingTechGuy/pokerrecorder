@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabase';
+import { supabase } from '../../supabase';
+import styles from './Auth.module.css';
 
 export function Auth() {
   const [loading, setLoading] = useState(false);
@@ -38,23 +39,23 @@ export function Auth() {
   };
 
   return (
-    <div className="auth-container">
-      <div className="card auth-card animate-fade-in">
-        <div className="flex justify-center mb-6">
-          <div className="auth-logo">
+    <div className={styles.authContainer}>
+      <div className={styles.authCard}>
+        <div className={styles.authLogoWrapper}>
+          <div className={styles.authLogo}>
             <span>♠</span>
           </div>
         </div>
-        <h2 className="text-2xl font-bold text-center mb-6">Poker Tracker Login</h2>
+        <h2 className={styles.authTitle}>Poker Tracker Login</h2>
         
-        {error && <div className="auth-alert error">{error}</div>}
-        {message && <div className="auth-alert success">{message}</div>}
+        {error && <div className={`${styles.authAlert} ${styles.authAlertError}`}>{error}</div>}
+        {message && <div className={`${styles.authAlert} ${styles.authAlertSuccess}`}>{message}</div>}
         
-        <form onSubmit={handleAuth} className="flex flex-col gap-4">
-          <div className="form-group mb-2">
-            <label className="label">Email</label>
+        <form onSubmit={handleAuth} className={styles.authForm}>
+          <div className={styles.authFormGroup}>
+            <label className={styles.authLabel}>Email</label>
             <input
-              className="input mt-2"
+              className={styles.authInput}
               type="email"
               placeholder="Your email address"
               value={email}
@@ -62,10 +63,10 @@ export function Auth() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="form-group mb-2">
-            <label className="label">Password</label>
+          <div className={styles.authFormGroup}>
+            <label className={styles.authLabel}>Password</label>
             <input
-              className="input mt-2"
+              className={styles.authInput}
               type="password"
               placeholder="Your password"
               value={password}
@@ -73,15 +74,15 @@ export function Auth() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button className="btn btn-primary mt-2 w-full" disabled={loading}>
+          <button className={styles.authSubmitBtn} disabled={loading}>
             {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
           </button>
         </form>
         
-        <div className="mt-6 text-center">
+        <div className={styles.authFooter}>
           <button 
             type="button" 
-            className="text-secondary hover-text-primary text-sm"
+            className={styles.authToggleBtn}
             onClick={() => setIsSignUp(!isSignUp)}
           >
             {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}

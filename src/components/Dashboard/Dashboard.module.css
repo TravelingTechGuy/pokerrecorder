@@ -1,0 +1,98 @@
+.dashboard {
+  animation: dashboardFadeIn 0.3s ease forwards;
+}
+
+@keyframes dashboardFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboardStatsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .dashboardStatsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dashboardCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboardCard:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.dashboardStatCard {
+  /* Inherits from card, we can just compose or duplicate. Let's strictly scope. */
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboardStatCard:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.dashboardStatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.dashboardStatTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.dashboardStatIcon {
+  color: var(--text-secondary);
+}
+
+.dashboardStatValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dashboardPositive {
+  color: var(--accent-primary);
+}
+
+.dashboardNegative {
+  color: var(--danger);
+}
+
+.dashboardChartCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  margin-top: 1rem;
+}
+
+.dashboardChartTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.dashboardChartWrapper {
+  width: 100%;
+  height: 300px;
+}

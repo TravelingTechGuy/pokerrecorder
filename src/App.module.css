@@ -1,0 +1,137 @@
+/* App.module.css */
+.app {
+  padding-bottom: 80px; /* Space for bottom nav */
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.main {
+  margin-top: 0.5rem;
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(24, 24, 27, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-glass);
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logoText {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.logoIcon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--border-radius-full);
+  background-color: rgba(16, 185, 129, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-primary);
+  font-weight: bold;
+  font-size: 0.875rem;
+}
+
+.signOutBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  transition: color 0.2s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
+}
+
+.signOutBtn:hover {
+  color: var(--danger);
+  background-color: var(--bg-surface-hover);
+}
+
+/* Nav */
+.bottomNav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.75rem;
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  background-color: var(--bg-surface);
+  border-top: 1px solid var(--border-color);
+  z-index: 50;
+}
+
+.navItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  transition: color 0.2s ease;
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.navItemActive {
+  color: var(--accent-primary);
+}
+
+.navItem:hover {
+  color: var(--text-primary);
+}
+
+.navAddBtn {
+  background-color: var(--accent-primary);
+  color: var(--bg-base);
+  border-radius: var(--border-radius-full);
+  padding: 0.5rem;
+  margin-top: -1.5rem;
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.navAddBtn:hover {
+  transform: translateY(-2px);
+}
+
+.navAddText {
+  margin-top: 0.25rem;
+}

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { BarChart3, PlusCircle, List, LogOut } from 'lucide-react';
 import { useGames, useHosts, useGameTypes } from './hooks/useData';
-import { Dashboard } from './components/Dashboard';
-import { GameForm } from './components/GameForm';
-import { HistoryTable } from './components/HistoryTable';
-import { Auth } from './components/Auth';
+import { Dashboard } from './components/Dashboard/Dashboard';
+import { GameForm } from './components/GameForm/GameForm';
+import { HistoryTable } from './components/HistoryTable/HistoryTable';
+import { Auth } from './components/Auth/Auth';
 import { supabase } from './supabase';
-import './index.css';
+import styles from './App.module.css';
 
-function App() {
+export default function App() {
   const [session, setSession] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const { games, addGame, deleteGame, importGames } = useGames();
@@ -35,54 +35,58 @@ function App() {
 
   const handleSaveGame = (game) => {
     addGame(game);
-    setActiveTab('dashboard'); // Redirect to dashboard after saving
+    setActiveTab('history');
+  };
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
-    <div className="app-container">
-      {/* Header */}
-      <header className="header glass">
-        <div className="header-container container flex justify-between items-center w-full">
-          <div className="flex items-center gap-3">
-            <h1 className="logo-text">Poker Tracker</h1>
-            <div className="logo-icon"><span>♠</span></div>
+    <div className={styles.app}>
+      <header className={styles.header}>
+        <div className={`${styles.container} ${styles.headerContainer}`}>
+          <div className={styles.logoWrapper}>
+            <div className={styles.logoIcon}>
+              <span>♠</span>
+            </div>
+            <h1 className={styles.logoText}>Poker Tracker</h1>
           </div>
-          <button 
-            onClick={() => supabase.auth.signOut()} 
-            className="text-secondary hover:text-danger flex items-center gap-1 text-sm transition-colors"
-            title="Sign Out"
-          >
+          
+          <button onClick={handleSignOut} className={styles.signOutBtn} title="Sign Out">
             <LogOut size={18} />
+            <span className="hidden sm-inline">Sign Out</span>
           </button>
         </div>
       </header>
 
-      <main className="container mt-2">
+      <main className={`${styles.container} ${styles.main}`}>
         {activeTab === 'dashboard' && <Dashboard games={games} />}
         {activeTab === 'add' && <GameForm onSave={handleSaveGame} hosts={hosts} addHost={addHost} gameTypes={gameTypes} />}
         {activeTab === 'history' && <HistoryTable games={games} onDelete={deleteGame} onImport={importGames} />}
       </main>
 
-      {/* Bottom Navigation */}
-      <nav className="bottom-nav">
+      <nav className={styles.bottomNav}>
         <button 
-          className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+          className={`${styles.navItem} ${activeTab === 'dashboard' ? styles.navItemActive : ''}`}
           onClick={() => setActiveTab('dashboard')}
         >
           <BarChart3 size={24} />
           <span>Dashboard</span>
         </button>
+        
         <button 
-          className={`nav-item ${activeTab === 'add' ? 'active' : ''}`}
+          className={styles.navItem}
           onClick={() => setActiveTab('add')}
         >
-          <div className="nav-add-btn">
+          <div className={styles.navAddBtn}>
             <PlusCircle size={28} />
           </div>
-          <span className="mt-2">Add Game</span>
+          <span className={`${activeTab === 'add' ? styles.navItemActive : ''} ${styles.navAddText}`}>Add Game</span>
         </button>
+        
         <button 
-          className={`nav-item ${activeTab === 'history' ? 'active' : ''}`}
+          className={`${styles.navItem} ${activeTab === 'history' ? styles.navItemActive : ''}`}
           onClick={() => setActiveTab('history')}
         >
           <List size={24} />
@@ -92,5 +96,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

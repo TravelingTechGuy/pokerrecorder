@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
+import styles from './GameForm.module.css';
 
 export function GameForm({ onSave, hosts, addHost, gameTypes }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
@@ -51,27 +52,27 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
   const currentProfit = cashOutAmount - (buyIns * buyInAmount);
 
   return (
-    <div className="card animate-fade-in">
-      <h2 className="text-xl font-bold mb-6">Record a Game</h2>
+    <div className={styles.gameFormCard}>
+      <h2 className={styles.gameFormTitle}>Record a Game</h2>
       
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="label">Date</label>
+      <form onSubmit={handleSubmit} className={styles.gameForm}>
+        <div className={styles.gameFormGroup}>
+          <label className={styles.gameFormLabel}>Date</label>
           <input 
             type="date" 
-            className="input" 
+            className={styles.gameFormInput} 
             value={date} 
             onChange={e => setDate(e.target.value)}
             required
           />
         </div>
 
-        <div className="form-group">
-          <label className="label">Host</label>
+        <div className={styles.gameFormGroup}>
+          <label className={styles.gameFormLabel}>Host</label>
           {!isAddingHost ? (
-            <div className="flex gap-2">
+            <div className={styles.gameFormHostRow}>
               <select 
-                className="input" 
+                className={styles.gameFormInput} 
                 value={host} 
                 onChange={e => setHost(e.target.value)}
                 required
@@ -80,31 +81,31 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
                   <option key={h} value={h}>{h}</option>
                 ))}
               </select>
-              <button type="button" className="btn btn-outline" onClick={() => setIsAddingHost(true)}>
+              <button type="button" className={styles.gameFormBtnOutline} onClick={() => setIsAddingHost(true)}>
                 New
               </button>
             </div>
           ) : (
-            <div className="flex gap-2">
+            <div className={styles.gameFormHostRow}>
               <input 
                 type="text" 
-                className="input" 
+                className={styles.gameFormInput} 
                 placeholder="Enter new host name" 
                 value={newHost}
                 onChange={e => setNewHost(e.target.value)}
                 required
               />
-              <button type="button" className="btn btn-outline" onClick={() => setIsAddingHost(false)}>
+              <button type="button" className={styles.gameFormBtnOutline} onClick={() => setIsAddingHost(false)}>
                 Cancel
               </button>
             </div>
           )}
         </div>
 
-        <div className="form-group">
-          <label className="label">Game Type</label>
+        <div className={styles.gameFormGroup}>
+          <label className={styles.gameFormLabel}>Game Type</label>
           <select 
-            className="input" 
+            className={styles.gameFormInput} 
             value={type} 
             onChange={e => setType(e.target.value)}
             required
@@ -115,12 +116,12 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
           </select>
         </div>
 
-        <div className="grid-2">
-          <div className="form-group w-full">
-            <label className="label">Buy-ins</label>
+        <div className={styles.gameFormGrid}>
+          <div className={styles.gameFormGridItem}>
+            <label className={styles.gameFormLabel}>Buy-ins</label>
             <input 
               type="number" 
-              className="input" 
+              className={styles.gameFormInput} 
               min="1" 
               step="1"
               value={buyIns} 
@@ -128,11 +129,11 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
               required
             />
           </div>
-          <div className="form-group w-full">
-            <label className="label">Amount per Buy-in ($)</label>
+          <div className={styles.gameFormGridItem}>
+            <label className={styles.gameFormLabel}>Amount per Buy-in ($)</label>
             <input 
               type="number" 
-              className="input" 
+              className={styles.gameFormInput} 
               min="0" 
               step="1"
               value={buyInAmount} 
@@ -142,11 +143,11 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="label">Cash Out Amount ($)</label>
+        <div className={styles.gameFormGroup}>
+          <label className={styles.gameFormLabel}>Cash Out Amount ($)</label>
           <input 
             type="number" 
-            className="input" 
+            className={styles.gameFormInput} 
             min="0" 
             step="1"
             value={cashOutAmount} 
@@ -155,16 +156,16 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
           />
         </div>
 
-        <div className="mt-6 estimate-box">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-secondary">Estimated Net:</span>
-            <span className={`text-xl font-bold ${currentProfit >= 0 ? 'text-accent' : 'text-danger'}`}>
+        <div className={styles.gameFormEstimate}>
+          <div className={styles.gameFormEstimateRow}>
+            <span className={styles.gameFormEstimateLabel}>Estimated Net:</span>
+            <span className={`${styles.gameFormEstimateValue} ${currentProfit >= 0 ? styles.gameFormEstimatePositive : styles.gameFormEstimateNegative}`}>
               {currentProfit >= 0 ? '+' : '-'}${Math.abs(currentProfit)}
             </span>
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary w-full mt-6">
+        <button type="submit" className={styles.gameFormSubmitBtn}>
           Save Game
         </button>
       </form>

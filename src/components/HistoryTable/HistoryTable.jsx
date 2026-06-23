@@ -1,7 +1,8 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { format, parseISO } from 'date-fns';
 import { Download, Upload, Trash2, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
-import { formatCurrency } from '../utils';
+import { formatCurrency } from '../../utils';
+import styles from './HistoryTable.module.css';
 
 export function HistoryTable({ games, onDelete, onImport }) {
   const fileInputRef = useRef(null);
@@ -49,7 +50,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
   };
 
   const SortIcon = ({ columnKey }) => {
-    if (sortConfig.key !== columnKey) return <ArrowUpDown size={14} className="opacity-50" />;
+    if (sortConfig.key !== columnKey) return <ArrowUpDown size={14} className={styles.historyTableIconOpacity} />;
     return sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />;
   };
   
@@ -133,15 +134,14 @@ export function HistoryTable({ games, onDelete, onImport }) {
   };
 
   return (
-    <div className="card animate-fade-in">
-      <div className="flex justify-between items-center mb-6" style={{ flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 className="text-xl font-bold">Game History</h2>
+    <div className={styles.historyTableCard}>
+      <div className={styles.historyTableHeader}>
+        <h2 className={styles.historyTableTitle}>Game History</h2>
         
-        <div className="flex items-center gap-4" style={{ flexWrap: 'wrap' }}>
-          <div className="mobile-only">
+        <div className={styles.historyTableActions}>
+          <div className={styles.historyTableSelectWrapper}>
             <select 
-              className="input"
-              style={{ padding: '0.4rem 0.75rem', width: 'auto' }}
+              className={styles.historyTableSelect}
               value={`${sortConfig.key}-${sortConfig.direction}`}
               onChange={(e) => {
                 const [key, direction] = e.target.value.split('-');
@@ -159,50 +159,50 @@ export function HistoryTable({ games, onDelete, onImport }) {
             </select>
           </div>
 
-          <div className="flex gap-2">
-          <input 
-            type="file" 
-            accept=".csv" 
-            ref={fileInputRef} 
-            onChange={handleImportCSV} 
-            style={{ display: 'none' }} 
-          />
-          <button className="btn btn-outline flex items-center gap-2" onClick={() => fileInputRef.current.click()}>
-            <Upload size={16} />
-            <span className="hidden sm-inline">Import</span>
-          </button>
-          <button className="btn btn-outline flex items-center gap-2" onClick={handleExportCSV}>
-            <Download size={16} />
-            <span className="hidden sm-inline">Export</span>
-          </button>
+          <div className={styles.historyTableBtnGroup}>
+            <input 
+              type="file" 
+              accept=".csv" 
+              ref={fileInputRef} 
+              onChange={handleImportCSV} 
+              style={{ display: 'none' }} 
+            />
+            <button className={styles.historyTableBtnOutline} onClick={() => fileInputRef.current.click()}>
+              <Upload size={16} />
+              <span className={styles.historyTableHiddenSm}>Import</span>
+            </button>
+            <button className={styles.historyTableBtnOutline} onClick={handleExportCSV}>
+              <Download size={16} />
+              <span className={styles.historyTableHiddenSm}>Export</span>
+            </button>
+          </div>
         </div>
       </div>
-      </div>
 
-      <div className="table-container">
-        <table className="table">
+      <div className={styles.historyTableContainer}>
+        <table className={styles.historyTable}>
           <thead>
             <tr>
-              <th onClick={() => requestSort('date')} className="th-sortable">
-                <div className="flex items-center gap-1">Date <SortIcon columnKey="date" /></div>
+              <th onClick={() => requestSort('date')} className={styles.historyTableSortableTh}>
+                <div className={styles.historyTableThContent}>Date <SortIcon columnKey="date" /></div>
               </th>
-              <th onClick={() => requestSort('host')} className="th-sortable">
-                <div className="flex items-center gap-1">Host <SortIcon columnKey="host" /></div>
+              <th onClick={() => requestSort('host')} className={styles.historyTableSortableTh}>
+                <div className={styles.historyTableThContent}>Host <SortIcon columnKey="host" /></div>
               </th>
-              <th onClick={() => requestSort('type')} className="th-sortable">
-                <div className="flex items-center gap-1">Type <SortIcon columnKey="type" /></div>
+              <th onClick={() => requestSort('type')} className={styles.historyTableSortableTh}>
+                <div className={styles.historyTableThContent}>Type <SortIcon columnKey="type" /></div>
               </th>
-              <th onClick={() => requestSort('buyIns')} className="th-sortable">
-                <div className="flex items-center gap-1"># Buy-ins <SortIcon columnKey="buyIns" /></div>
+              <th onClick={() => requestSort('buyIns')} className={styles.historyTableSortableTh}>
+                <div className={styles.historyTableThContent}># Buy-ins <SortIcon columnKey="buyIns" /></div>
               </th>
-              <th onClick={() => requestSort('in')} className="th-sortable">
-                <div className="flex items-center gap-1">In <SortIcon columnKey="in" /></div>
+              <th onClick={() => requestSort('in')} className={styles.historyTableSortableTh}>
+                <div className={styles.historyTableThContent}>In <SortIcon columnKey="in" /></div>
               </th>
-              <th onClick={() => requestSort('out')} className="th-sortable">
-                <div className="flex items-center gap-1">Out <SortIcon columnKey="out" /></div>
+              <th onClick={() => requestSort('out')} className={styles.historyTableSortableTh}>
+                <div className={styles.historyTableThContent}>Out <SortIcon columnKey="out" /></div>
               </th>
-              <th onClick={() => requestSort('pl')} className="th-sortable">
-                <div className="flex items-center gap-1">P/L <SortIcon columnKey="pl" /></div>
+              <th onClick={() => requestSort('pl')} className={styles.historyTableSortableTh}>
+                <div className={styles.historyTableThContent}>P/L <SortIcon columnKey="pl" /></div>
               </th>
               <th></th>
             </tr>
@@ -213,18 +213,18 @@ export function HistoryTable({ games, onDelete, onImport }) {
               const pl = g.cashOutAmount - totalInvested;
               return (
                 <tr key={g.id}>
-                  <td data-label="Date" className="whitespace-nowrap">{format(parseISO(g.date), 'MMM d, yyyy')}</td>
+                  <td data-label="Date" className={styles.historyTableWhitespaceNowrap}>{format(parseISO(g.date), 'MMM d, yyyy')}</td>
                   <td data-label="Host">{g.host}</td>
-                  <td data-label="Type" className="capitalize">{g.type || 'cash'}</td>
+                  <td data-label="Type" className={styles.historyTableCapitalize}>{g.type || 'cash'}</td>
                   <td data-label="# Buy-ins">{g.buyIns}</td>
                   <td data-label="In">{formatCurrency(totalInvested)}</td>
                   <td data-label="Out">{formatCurrency(g.cashOutAmount)}</td>
-                  <td data-label="P/L" className={`font-semibold ${pl >= 0 ? 'positive' : 'negative'}`}>
+                  <td data-label="P/L" className={pl >= 0 ? styles.historyTablePositive : styles.historyTableNegative}>
                     {pl >= 0 ? '+' : ''}{formatCurrency(pl)}
                   </td>
                   <td data-label="Actions">
                     <button 
-                      className="btn-ghost" 
+                      className={styles.historyTableBtnGhost} 
                       onClick={() => {
                         if (window.confirm('Are you sure you want to delete this game?')) {
                           onDelete(g.id);

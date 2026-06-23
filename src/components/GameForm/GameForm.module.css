@@ -1,0 +1,153 @@
+.gameFormCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: gameFormFadeIn 0.3s ease forwards;
+}
+
+@keyframes gameFormFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.gameFormTitle {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+}
+
+.gameForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.gameFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.gameFormLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.gameFormInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-base);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.gameFormInput:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--ring-color);
+}
+
+.gameFormHostRow {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gameFormBtnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.gameFormBtnOutline:hover {
+  background-color: var(--bg-surface-hover);
+}
+
+.gameFormGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .gameFormGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.gameFormGridItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.gameFormEstimate {
+  margin-top: 1.5rem;
+  background-color: var(--bg-base);
+  padding: 1rem;
+  border-radius: var(--border-radius-md);
+}
+
+.gameFormEstimateRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gameFormEstimateLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.gameFormEstimateValue {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.gameFormEstimatePositive {
+  color: var(--accent-primary);
+}
+
+.gameFormEstimateNegative {
+  color: var(--danger);
+}
+
+.gameFormSubmitBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: var(--accent-primary);
+  color: white;
+  margin-top: 1.5rem;
+}
+
+.gameFormSubmitBtn:hover {
+  background-color: var(--accent-primary-hover);
+  transform: translateY(-1px);
+}
