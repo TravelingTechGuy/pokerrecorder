@@ -1,0 +1,260 @@
+.streakCard {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.streakCard:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.streakHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.streakTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.streakIcon {
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.streakBody {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.streakValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+/* Streak states */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.08); }
+}
+
+.streakWin {
+  color: #f59e0b; /* Amber/orange */
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.4));
+  animation: pulse 2.5s infinite ease-in-out;
+}
+
+.streakLoss {
+  color: var(--danger);
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.4));
+}
+
+.streakNeutral {
+  color: var(--text-secondary);
+}
+
+/* Recent Form */
+.recentFormContainer {
+  margin-bottom: 0.75rem;
+}
+
+.recentFormLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.recentDotsRow {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 28px;
+}
+
+.noFormText {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.dotWrapper {
+  position: relative;
+}
+
+.recentDot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.625rem;
+  font-weight: 700;
+  user-select: none;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+}
+
+.recentDot:hover {
+  transform: scale(1.15);
+}
+
+/* Dot Types */
+.dotWin {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--accent-primary);
+}
+
+.dotWin:hover {
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+}
+
+.dotLoss {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: var(--danger);
+}
+
+.dotLoss:hover {
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.dotBreakeven {
+  background: rgba(161, 161, 170, 0.1);
+  border: 1px solid rgba(161, 161, 170, 0.3);
+  color: var(--text-secondary);
+}
+
+.dotBreakeven:hover {
+  box-shadow: 0 0 8px rgba(161, 161, 170, 0.4);
+}
+
+/* CSS Tooltip */
+.tooltip {
+  position: absolute;
+  bottom: 135%;
+  left: 50%;
+  transform: translate(-50%, 6px);
+  background-color: #0c0c0e;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 0.625rem 0.75rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  min-width: 170px;
+  transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tooltip arrow */
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #0c0c0e transparent transparent transparent;
+}
+
+.dotWrapper:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
+.tooltipHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.tooltipDate {
+  color: var(--text-primary);
+}
+
+.tooltipType {
+  color: var(--text-secondary);
+  font-size: 0.625rem;
+  background-color: var(--bg-surface-hover);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.tooltipDivider {
+  height: 1px;
+  background-color: var(--border-color);
+  margin: 0.375rem 0;
+}
+
+.tooltipBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.tooltipRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+}
+
+.tooltipLabel {
+  color: var(--text-secondary);
+}
+
+.tooltipValue {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.textPositive {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.textNegative {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Footer / Record metrics */
+.streakFooter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 0.75rem;
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.recordItem {
+  font-weight: 500;
+}
+
+.recordDivider {
+  color: var(--border-color);
+}

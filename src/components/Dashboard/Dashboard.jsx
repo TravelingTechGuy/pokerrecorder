@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns';
 import { TrendingUp, DollarSign, Activity } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { formatCurrency } from '../../utils';
+import { StreakMeter } from './StreakMeter';
 import styles from './Dashboard.module.css';
 
 export function Dashboard({ games }) {
@@ -75,6 +76,8 @@ export function Dashboard({ games }) {
           </div>
           <p className={styles.dashboardStatValue}>{stats.gamesPlayed}</p>
         </div>
+
+        <StreakMeter games={games} />
       </div>
 
       {chartData.length > 0 && (
