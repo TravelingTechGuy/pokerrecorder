@@ -32,3 +32,11 @@ input, select {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.footer-label {
+  text-align: center;
+  font-size: 0.65rem;
+  color: var(--text-secondary, #888);
+  letter-spacing: 0.5px;
+  padding-bottom: 0.25rem;
+}

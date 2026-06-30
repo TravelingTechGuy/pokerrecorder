@@ -67,6 +67,7 @@ export default function App() {
       </main>
 
       <nav className={styles.bottomNav}>
+        <div className={styles.navButtons}>
         <button 
           className={`${styles.navItem} ${activeTab === 'dashboard' ? styles.navItemActive : ''}`}
           onClick={() => setActiveTab('dashboard')}
@@ -92,6 +93,10 @@ export default function App() {
           <List size={24} />
           <span>History</span>
         </button>
+        </div>
+        <div className="footer-label">
+          All rights reserved Traveling Tech Guy LLC {new Date().getFullYear()}
+        </div>
       </nav>
     </div>
   );
