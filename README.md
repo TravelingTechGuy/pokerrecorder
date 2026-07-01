@@ -1,6 +1,6 @@
 # ♠️ Poker Tracker
 
-A secure, cloud-synced, mobile-first web application designed to track your live poker sessions, calculate profit/loss, and visualize your performance over time. 
+A secure, cloud-synced, mobile-first web application designed to track your live poker sessions, calculate profit/loss, and visualize your performance over time.
 
 ## 🏗 Architecture & Logic
 
@@ -54,7 +54,7 @@ erDiagram
     GAME_TYPES {
         TEXT name PK
     }
-    
+
     GAMES }|--|| HOSTS : "hosted by"
     GAMES }|--|| GAME_TYPES : "is of type"
 ```
@@ -69,11 +69,11 @@ graph TD
     B -->|No| C[Login / Sign Up Screen]
     C -->|Success| D[Main App Wrapper]
     B -->|Yes| D
-    
+
     D --> E[Dashboard Tab]
     D --> F[Add Game Tab]
     D --> G[History Tab]
-    
+
     E --> H[View P/L Charts & Stats]
     F --> I[Record Buy-ins & Cashouts]
     G --> J[View Table / Delete Games]
@@ -165,3 +165,6 @@ npm run dev
 5. Toggle **Enable Email Signup** to **OFF** and hit **Save**.
 
 *Congratulations! Your app is now completely secure. Only you can log in, and only logged-in users can view or edit the database.*
+
+## License
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details. All rights reserved Traveling Tech Guy LLC.
