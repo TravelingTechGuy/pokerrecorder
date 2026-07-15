@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { Flame, TrendingDown, Activity } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
-import { formatCurrency } from '../../utils';
+import { formatCurrency, getProfit } from '../../utils';
 import styles from './StreakMeter.module.css';
 
 export function StreakMeter({ games }) {
@@ -25,7 +25,7 @@ export function StreakMeter({ games }) {
     let tempLoss = 0;
 
     sorted.forEach(g => {
-      const profit = g.cashOutAmount - (g.buyIns * g.buyInAmount);
+      const profit = getProfit(g);
       if (profit > 0) {
         tempWin++;
         tempLoss = 0;
@@ -42,17 +42,17 @@ export function StreakMeter({ games }) {
     });
 
     // Calculate current streak
-    let currentStreak = 0;
-    let currentStreakType = 'none';
+    let currentStreak;
+    let currentStreakType;
 
     const lastGame = sorted[sorted.length - 1];
-    const lastProfit = lastGame.cashOutAmount - (lastGame.buyIns * lastGame.buyInAmount);
+    const lastProfit = getProfit(lastGame);
 
     if (lastProfit > 0) {
       currentStreakType = 'win';
       let count = 0;
       for (let i = sorted.length - 1; i >= 0; i--) {
-        const p = sorted[i].cashOutAmount - (sorted[i].buyIns * sorted[i].buyInAmount);
+        const p = getProfit(sorted[i]);
         if (p > 0) {
           count++;
         } else {
@@ -64,7 +64,7 @@ export function StreakMeter({ games }) {
       currentStreakType = 'loss';
       let count = 0;
       for (let i = sorted.length - 1; i >= 0; i--) {
-        const p = sorted[i].cashOutAmount - (sorted[i].buyIns * sorted[i].buyInAmount);
+        const p = getProfit(sorted[i]);
         if (p < 0) {
           count++;
         } else {
@@ -79,7 +79,7 @@ export function StreakMeter({ games }) {
 
     // Last 5 games (chronological left-to-right, so newest is last in list)
     const recent = sorted.slice(-5).map(g => {
-      const profit = g.cashOutAmount - (g.buyIns * g.buyInAmount);
+      const profit = getProfit(g);
       return {
         id: g.id,
         profit,

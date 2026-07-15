@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BarChart3, PlusCircle, List, LogOut } from 'lucide-react';
 import { useGames, useHosts, useGameTypes } from './hooks/useData';
 import { Dashboard } from './components/Dashboard/Dashboard';
@@ -11,9 +11,9 @@ import styles from './App.module.css';
 export default function App() {
   const [session, setSession] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const { games, addGame, deleteGame, importGames } = useGames();
-  const { hosts, addHost } = useHosts();
-  const { gameTypes } = useGameTypes();
+  const { games, addGame, deleteGame, importGames } = useGames(session);
+  const { hosts, addHost } = useHosts(session);
+  const { gameTypes } = useGameTypes(session);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {

@@ -1,7 +1,7 @@
-import React, { useRef, useState, useMemo } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { format, parseISO } from 'date-fns';
 import { Download, Upload, Trash2, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
-import { formatCurrency } from '../../utils';
+import { formatCurrency, getInvestedAmount, getProfit } from '../../utils';
 import styles from './HistoryTable.module.css';
 
 export function HistoryTable({ games, onDelete, onImport }) {
@@ -11,23 +11,18 @@ export function HistoryTable({ games, onDelete, onImport }) {
   const sortedGames = useMemo(() => {
     let sortableGames = [...games];
     sortableGames.sort((a, b) => {
-      const aInvested = a.buyIns * a.buyInAmount;
-      const bInvested = b.buyIns * b.buyInAmount;
-      const aPl = a.cashOutAmount - aInvested;
-      const bPl = b.cashOutAmount - bInvested;
-
       let aValue = a[sortConfig.key];
       let bValue = b[sortConfig.key];
 
       if (sortConfig.key === 'in') {
-        aValue = aInvested;
-        bValue = bInvested;
+        aValue = getInvestedAmount(a);
+        bValue = getInvestedAmount(b);
       } else if (sortConfig.key === 'out') {
         aValue = a.cashOutAmount;
         bValue = b.cashOutAmount;
       } else if (sortConfig.key === 'pl') {
-        aValue = aPl;
-        bValue = bPl;
+        aValue = getProfit(a);
+        bValue = getProfit(b);
       }
 
       if (aValue < bValue) {
@@ -49,7 +44,7 @@ export function HistoryTable({ games, onDelete, onImport }) {
     setSortConfig({ key, direction });
   };
 
-  const SortIcon = ({ columnKey }) => {
+  const renderSortIcon = (columnKey) => {
     if (sortConfig.key !== columnKey) return <ArrowUpDown size={14} className={styles.historyTableIconOpacity} />;
     return sortConfig.direction === 'asc' ? <ChevronUp size={14} /> : <ChevronDown size={14} />;
   };
@@ -60,8 +55,8 @@ export function HistoryTable({ games, onDelete, onImport }) {
     const headers = ['Date', 'Host', 'Type', 'Buy-ins', 'Buy-in Amount', 'Total Invested', 'Cash Out', 'Profit/Loss'];
     
     const rows = games.map(g => {
-      const totalInvested = g.buyIns * g.buyInAmount;
-      const pl = g.cashOutAmount - totalInvested;
+      const totalInvested = getInvestedAmount(g);
+      const pl = getProfit(g);
       return [
         g.date,
         g.host,
@@ -184,33 +179,33 @@ export function HistoryTable({ games, onDelete, onImport }) {
           <thead>
             <tr>
               <th onClick={() => requestSort('date')} className={styles.historyTableSortableTh}>
-                <div className={styles.historyTableThContent}>Date <SortIcon columnKey="date" /></div>
+                <div className={styles.historyTableThContent}>Date {renderSortIcon('date')}</div>
               </th>
               <th onClick={() => requestSort('host')} className={styles.historyTableSortableTh}>
-                <div className={styles.historyTableThContent}>Host <SortIcon columnKey="host" /></div>
+                <div className={styles.historyTableThContent}>Host {renderSortIcon('host')}</div>
               </th>
               <th onClick={() => requestSort('type')} className={styles.historyTableSortableTh}>
-                <div className={styles.historyTableThContent}>Type <SortIcon columnKey="type" /></div>
+                <div className={styles.historyTableThContent}>Type {renderSortIcon('type')}</div>
               </th>
               <th onClick={() => requestSort('buyIns')} className={styles.historyTableSortableTh}>
-                <div className={styles.historyTableThContent}># Buy-ins <SortIcon columnKey="buyIns" /></div>
+                <div className={styles.historyTableThContent}># Buy-ins {renderSortIcon('buyIns')}</div>
               </th>
               <th onClick={() => requestSort('in')} className={styles.historyTableSortableTh}>
-                <div className={styles.historyTableThContent}>In <SortIcon columnKey="in" /></div>
+                <div className={styles.historyTableThContent}>In {renderSortIcon('in')}</div>
               </th>
               <th onClick={() => requestSort('out')} className={styles.historyTableSortableTh}>
-                <div className={styles.historyTableThContent}>Out <SortIcon columnKey="out" /></div>
+                <div className={styles.historyTableThContent}>Out {renderSortIcon('out')}</div>
               </th>
               <th onClick={() => requestSort('pl')} className={styles.historyTableSortableTh}>
-                <div className={styles.historyTableThContent}>P/L <SortIcon columnKey="pl" /></div>
+                <div className={styles.historyTableThContent}>P/L {renderSortIcon('pl')}</div>
               </th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {sortedGames.map(g => {
-              const totalInvested = g.buyIns * g.buyInAmount;
-              const pl = g.cashOutAmount - totalInvested;
+              const totalInvested = getInvestedAmount(g);
+              const pl = getProfit(g);
               return (
                 <tr key={g.id}>
                   <td data-label="Date" className={styles.historyTableWhitespaceNowrap}>{format(parseISO(g.date), 'MMM d, yyyy')}</td>

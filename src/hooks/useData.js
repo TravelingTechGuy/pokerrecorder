@@ -1,35 +1,35 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 
-export function useGames() {
+export function useGames(session) {
   const [games, setGames] = useState([]);
-
-  const fetchGames = async () => {
-    const { data, error } = await supabase
-      .from('games')
-      .select('*')
-      .order('date', { ascending: true });
-      
-    if (error) {
-      console.error('Error fetching games:', error);
-    } else if (data) {
-      setGames(data);
-    }
-  };
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    fetchGames();
+    if (!session) {
+      Promise.resolve().then(() => setGames(prev => prev.length > 0 ? [] : prev));
+      return;
+    }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        fetchGames();
-      } else {
-        setGames([]);
-      }
-    });
+    let active = true;
+    supabase
+      .from('games')
+      .select('*')
+      .order('date', { ascending: true })
+      .then(({ data, error }) => {
+        if (active) {
+          if (error) {
+            console.error('Error fetching games:', error);
+          } else if (data) {
+            setGames(data);
+          }
+        }
+      });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [session, refreshKey]);
 
   const addGame = async (game) => {
     const { data, error } = await supabase
@@ -68,41 +68,40 @@ export function useGames() {
     if (error) {
       console.error('Error importing games:', error);
     } else {
-      fetchGames();
+      setRefreshKey(prev => prev + 1);
     }
   };
 
   return { games, addGame, deleteGame, importGames };
 }
 
-export function useHosts() {
+export function useHosts(session) {
   const [hosts, setHosts] = useState([]);
 
-  const fetchHosts = async () => {
-    const { data, error } = await supabase
-      .from('hosts')
-      .select('name');
-      
-    if (error) {
-      console.error('Error fetching hosts:', error);
-    } else if (data) {
-      setHosts(data.map(h => h.name));
-    }
-  };
-
   useEffect(() => {
-    fetchHosts();
+    if (!session) {
+      Promise.resolve().then(() => setHosts(prev => prev.length > 0 ? [] : prev));
+      return;
+    }
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        fetchHosts();
-      } else {
-        setHosts([]);
-      }
-    });
+    let active = true;
+    supabase
+      .from('hosts')
+      .select('name')
+      .then(({ data, error }) => {
+        if (active) {
+          if (error) {
+            console.error('Error fetching hosts:', error);
+          } else if (data) {
+            setHosts(data.map(h => h.name));
+          }
+        }
+      });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [session]);
 
   const addHost = async (host) => {
     if (host && !hosts.includes(host)) {
@@ -121,32 +120,30 @@ export function useHosts() {
   return { hosts, addHost };
 }
 
-export function useGameTypes() {
+export function useGameTypes(session) {
   const [gameTypes, setGameTypes] = useState(['cash', 'tournament', 'mixed']);
 
-  const fetchGameTypes = async () => {
-    const { data, error } = await supabase
-      .from('game_types')
-      .select('name');
-      
-    if (error) {
-      console.error('Error fetching game types:', error);
-    } else if (data && data.length > 0) {
-      setGameTypes(data.map(gt => gt.name));
-    }
-  };
-
   useEffect(() => {
-    fetchGameTypes();
+    if (!session) return;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        fetchGameTypes();
-      }
-    });
+    let active = true;
+    supabase
+      .from('game_types')
+      .select('name')
+      .then(({ data, error }) => {
+        if (active) {
+          if (error) {
+            console.error('Error fetching game types:', error);
+          } else if (data && data.length > 0) {
+            setGameTypes(data.map(gt => gt.name));
+          }
+        }
+      });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [session]);
 
   return { gameTypes };
 }

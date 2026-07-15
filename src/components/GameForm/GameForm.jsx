@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
+import { getProfit } from '../../utils';
 import styles from './GameForm.module.css';
 
 export function GameForm({ onSave, hosts, addHost, gameTypes }) {
@@ -12,17 +13,10 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
   const [buyInAmount, setBuyInAmount] = useState(50);
   const [cashOutAmount, setCashOutAmount] = useState(0);
 
-  // Initialize selected host once async hosts load
-  React.useEffect(() => {
-    if (hosts.length > 0 && !host) {
-      setHost(hosts[0]);
-    }
-  }, [hosts, host]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    let finalHost = host;
+    let finalHost = host || hosts[0] || '';
     if (isAddingHost && newHost.trim()) {
       finalHost = newHost.trim();
       await addHost(finalHost);
@@ -49,7 +43,7 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
     setNewHost('');
   };
 
-  const currentProfit = cashOutAmount - (buyIns * buyInAmount);
+  const currentProfit = getProfit({ buyIns, buyInAmount, cashOutAmount });
 
   return (
     <div className={styles.gameFormCard}>
@@ -73,7 +67,7 @@ export function GameForm({ onSave, hosts, addHost, gameTypes }) {
             <div className={styles.gameFormHostRow}>
               <select 
                 className={styles.gameFormInput} 
-                value={host} 
+                value={host || hosts[0] || ''} 
                 onChange={e => setHost(e.target.value)}
                 required
               >

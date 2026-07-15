@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { format, parseISO } from 'date-fns';
 import { TrendingUp, DollarSign, Activity } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { formatCurrency } from '../../utils';
+import { formatCurrency, getInvestedAmount, getProfit } from '../../utils';
 import { StreakMeter } from './StreakMeter';
 import styles from './Dashboard.module.css';
 
@@ -13,8 +13,8 @@ export function Dashboard({ games }) {
     let gamesPlayed = games.length;
 
     games.forEach(g => {
-      const invested = g.buyIns * g.buyInAmount;
-      const profit = g.cashOutAmount - invested;
+      const invested = getInvestedAmount(g);
+      const profit = getProfit(g);
       totalInvested += invested;
       totalProfit += profit;
     });
@@ -27,23 +27,22 @@ export function Dashboard({ games }) {
   }, [games]);
 
   const chartData = useMemo(() => {
-    let runningTotal = 0;
-    // games are in desc order by date in the UI usually, but useData fetches asc.
-    // wait, we just use the raw array and map it. 
-    // We should ensure it's asc for chart:
     const sorted = [...games].sort((a, b) => new Date(a.date) - new Date(b.date));
     
-    return sorted.map(g => {
-      const invested = g.buyIns * g.buyInAmount;
-      const profit = g.cashOutAmount - invested;
+    let runningTotal = 0;
+    const result = [];
+    for (let i = 0; i < sorted.length; i++) {
+      const g = sorted[i];
+      const profit = getProfit(g);
       runningTotal += profit;
-      return {
+      result.push({
         name: format(parseISO(g.date), 'MMM d'),
         cumulative: runningTotal,
         profit: profit,
         host: g.host
-      };
-    });
+      });
+    }
+    return result;
   }, [games]);
 
   return (
