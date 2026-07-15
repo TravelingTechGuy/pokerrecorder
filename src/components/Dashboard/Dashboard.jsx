@@ -83,7 +83,7 @@ export function Dashboard({ games }) {
         <div className={styles.dashboardChartCard}>
           <h3 className={styles.dashboardChartTitle}>Cumulative P/L Over Time</h3>
           <div className={styles.dashboardChartWrapper}>
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <LineChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
                 <XAxis dataKey="name" stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} />
