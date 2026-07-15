@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { format, parseISO } from 'date-fns';
 import { TrendingUp, DollarSign, Activity } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
@@ -7,6 +7,11 @@ import { StreakMeter } from './StreakMeter';
 import styles from './Dashboard.module.css';
 
 export function Dashboard({ games }) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    Promise.resolve().then(() => setMounted(true));
+  }, []);
+
   const stats = useMemo(() => {
     let totalProfit = 0;
     let totalInvested = 0;
@@ -83,29 +88,31 @@ export function Dashboard({ games }) {
         <div className={styles.dashboardChartCard}>
           <h3 className={styles.dashboardChartTitle}>Cumulative P/L Over Time</h3>
           <div className={styles.dashboardChartWrapper}>
-            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-              <LineChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                <XAxis dataKey="name" stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }}
-                  itemStyle={{ color: '#f8fafc' }}
-                  labelStyle={{ color: '#a1a1aa', marginBottom: '4px' }}
-                  formatter={(value) => [formatCurrency(value), 'Cumulative P/L']}
-                  labelFormatter={(label, payload) => payload[0] ? `${label} at ${payload[0].payload.host}` : label}
-                />
-                <ReferenceLine y={0} stroke="#52525b" strokeDasharray="3 3" />
-                <Line 
-                  type="monotone" 
-                  dataKey="cumulative" 
-                  stroke="#10b981" 
-                  strokeWidth={3}
-                  dot={{ r: 4, fill: '#18181b', stroke: '#10b981', strokeWidth: 2 }}
-                  activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {mounted && (
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                <LineChart data={chartData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                  <XAxis dataKey="name" stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#a1a1aa" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px' }}
+                    itemStyle={{ color: '#f8fafc' }}
+                    labelStyle={{ color: '#a1a1aa', marginBottom: '4px' }}
+                    formatter={(value) => [formatCurrency(value), 'Cumulative P/L']}
+                    labelFormatter={(label, payload) => payload[0] ? `${label} at ${payload[0].payload.host}` : label}
+                  />
+                  <ReferenceLine y={0} stroke="#52525b" strokeDasharray="3 3" />
+                  <Line 
+                    type="monotone" 
+                    dataKey="cumulative" 
+                    stroke="#10b981" 
+                    strokeWidth={3}
+                    dot={{ r: 4, fill: '#18181b', stroke: '#10b981', strokeWidth: 2 }}
+                    activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </div>
       )}
