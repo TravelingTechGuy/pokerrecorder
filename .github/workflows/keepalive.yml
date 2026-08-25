@@ -2,8 +2,8 @@ name: Supabase Keep-Alive
 
 on:
   schedule:
-    # Runs daily at 04:00 UTC
-    - cron: '0 4 * * *'
+    # Runs every 3 hours
+    - cron: '0 */3 * * *'
   workflow_dispatch: # Allows manual testing
 
 jobs:
@@ -16,9 +16,9 @@ jobs:
             "${{ secrets.SUPABASE_URL }}/rest/v1/hosts?select=name&limit=1" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
-          
+
           echo "Supabase API returned HTTP status: $STATUS"
-          
+
           if [ "$STATUS" -ne 200 ]; then
             echo "Failed to query database table. Status code: $STATUS"
             exit 1
